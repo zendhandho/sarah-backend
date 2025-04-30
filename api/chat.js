@@ -11,6 +11,12 @@ export default async function handler(req, res) {
 
   const { userInput } = req.body;
 
+  // ✅ DEBUG: Log if API key is missing
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("Missing OpenAI API key!");
+    return res.status(500).json({ error: "OpenAI API key is missing" });
+  }
+
   try {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
@@ -27,7 +33,6 @@ export default async function handler(req, res) {
     res.status(200).json({ answer: completion.choices[0].message.content });
   } catch (err) {
     console.error("OpenAI Error:", err.message);
-    res.status(500).json({ error: "Something went wrong", details: err.message });
+    res.status(500).json({ error: "OpenAI API call failed", details: err.message });
   }
 }
-

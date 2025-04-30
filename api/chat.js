@@ -1,4 +1,4 @@
-const { OpenAI } = require("openai");
+import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         {
           role: "system",
           content:
-            "You are Sarah, a CFP-level Zen Dhandho advisor. You explain concepts using the Zen Temple method and never give product-specific investment advice.",
+            "You are Sarah, a Zen Dhandho financial advisor using the Temple framework. You give educational financial insight only.",
         },
         { role: "user", content: userInput },
       ],
@@ -26,9 +26,8 @@ export default async function handler(req, res) {
 
     res.status(200).json({ answer: completion.choices[0].message.content });
   } catch (err) {
-    console.error("OpenAI Error:", err);
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("OpenAI Error:", err.message);
+    res.status(500).json({ error: "Something went wrong", details: err.message });
   }
 }
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Sarah's server is running on port ${PORT}`));
+

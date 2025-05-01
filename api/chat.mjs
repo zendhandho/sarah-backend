@@ -1,9 +1,9 @@
 import OpenAI from "openai";
 
-console.log("🧠 Sarah's Vercel function is loaded");
+console.log("🧠 Sarah's Vercel function is online");
 
 export default async function handler(req, res) {
-  console.log("📩 Incoming request:", req.method);
+  console.log("📩 Request received:", req.method);
   console.log("🔐 API key exists:", !!process.env.OPENAI_API_KEY);
 
   if (req.method !== "POST") {
@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
   if (!process.env.OPENAI_API_KEY) {
     console.error("❌ Missing OpenAI API key");
-    return res.status(500).json({ error: "OpenAI API key is missing" });
+    return res.status(500).json({ error: "API key is missing" });
   }
 
   const openai = new OpenAI({
@@ -23,21 +23,20 @@ export default async function handler(req, res) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
           content:
-            "You are Sarah, a warm and wise Zen Dhandho financial advisor. Use the Temple framework. Never give product recommendations. Offer clear, educational insight.",
+            "You are Sarah, a warm, patient Zen Dhandho financial guide. You explain concepts clearly using the Financial Temple framework and never give direct financial advice—only education.",
         },
         { role: "user", content: userInput },
       ],
     });
 
-    console.log("✅ GPT Response:", completion.choices[0].message.content);
     res.status(200).json({ answer: completion.choices[0].message.content });
   } catch (err) {
-    console.error("🔥 OpenAI API call failed:", err.message);
+    console.error("🔥 OpenAI API Error:", err.message);
     res.status(500).json({ error: "GPT failed", details: err.message });
   }
 }

@@ -4,7 +4,7 @@
 
   "functions": {
 
-    "api/*.mjs": {
+    "api/chat.mjs": {
 
       "runtime": "nodejs18.x"
 
@@ -13,4 +13,3 @@
   }
 
 }
-

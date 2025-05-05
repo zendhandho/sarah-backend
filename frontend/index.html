@@ -1,28 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sarah API Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Zen Dhandho – Ask Sarah</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Ask Sarah-Backend</h1>
+<body class="h-full bg-gradient-to-br from-teal-50 to-emerald-100 flex flex-col">
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-extrabold text-emerald-700 drop-shadow">Ask Sarah&nbsp;•&nbsp;Zen Dhandho</h1>
+  </header>
 
-  <input id="question" placeholder="Type a question…" style="width:60%">
-  <button onclick="submitQ()">Ask</button>
+  <main class="mx-auto w-full max-w-3xl bg-white/80 rounded-2xl shadow p-8 grow flex flex-col">
+    <form id="chatForm" class="flex gap-3">
+      <input id="question" class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+             type="text" placeholder="Type your question…" autocomplete="off" required />
+      <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 rounded-lg">Ask</button>
+    </form>
 
-  <pre id="answer" style="margin-top:1rem;font-size:1.1rem;"></pre>
+    <!-- answer area -->
+    <div id="answer" class="mt-8 text-lg leading-relaxed whitespace-pre-wrap"></div>
+
+    <!-- spinner -->
+    <div id="spinner" class="hidden mt-4 flex justify-center">
+      <svg class="animate-spin h-8 w-8 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+      </svg>
+    </div>
+  </main>
 
   <script>
-    async function submitQ () {
-      const q = document.getElementById('question').value || 'hello';
-      const res = await fetch('https://sarah-backend.vercel.app/api/chat', {
-        method: 'POST',
+    const form   = document.getElementById('chatForm');
+    const input  = document.getElementById('question');
+    const answer = document.getElementById('answer');
+    const spin   = document.getElementById('spinner');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      answer.textContent = '';                 // clear last answer
+      spin.classList.remove('hidden');
+
+      const res  = await fetch('/api/chat', {
+        method : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userInput: q })
+        body   : JSON.stringify({ userInput: input.value })
       });
+
       const data = await res.json();
-      document.getElementById('answer').textContent = data.answer ?? '[no answer]';
-    }
+      spin.classList.add('hidden');
+      answer.textContent = data.answer || 'No response 🤔';
+
+      input.value = '';
+      answer.scrollIntoView({ behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>

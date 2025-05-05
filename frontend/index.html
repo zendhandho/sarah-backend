@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sarah API Test</title>
+</head>
+<body>
+  <h1>Ask Sarah-Backend</h1>
+
+  <input id="question" placeholder="Type a question…" style="width:60%">
+  <button onclick="submitQ()">Ask</button>
+
+  <pre id="answer" style="margin-top:1rem;font-size:1.1rem;"></pre>
+
+  <script>
+    async function submitQ () {
+      const q = document.getElementById('question').value || 'hello';
+      const res = await fetch('https://sarah-backend.vercel.app/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userInput: q })
+      });
+      const data = await res.json();
+      document.getElementById('answer').textContent = data.answer ?? '[no answer]';
+    }
+  </script>
+</body>
+</html>

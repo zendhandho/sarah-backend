@@ -1,66 +1,74 @@
-// api/chat.js
-// ──────────────────────────────────────────────────────────────
-// Serverless function for Vercel (Node.js 18 runtime)
-//
-// • Accepts POST { userInput: "…" }
-// • Returns { answer: "…" }
-// • Adds CORS headers so browsers don’t block the call.
-// ──────────────────────────────────────────────────────────────
+/*  /api/chat.js  – Serverless Function for Vercel (Node 18 runtime)
+   ────────────────────────────────────────────────────────────────
+   POST  { userInput: "..." }  ➜  returns { answer: "..." }
+   Adds CORS headers (localhost + zendhandho.com) so browsers don’t block the call.
+*/
 
-/*  ░░░ CONFIG ░░░  */
+import OpenAI from "openai";
+
+// ——— CONFIG ———
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY        // set this in Vercel → Settings → Environment
+});
+
+// Replace / add more origins if you need them
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "https://zendhandho.com",
-  "https://www.zendhandho.com",
+  "https://www.zendhandho.com"
 ];
 
-/*  ░░░ CORS helpers ░░░  */
+// ——— Helpers ———
 function corsHeaders(origin) {
   return {
-    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin)
-      ? origin
-      : "null",
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes(origin) ? origin : "null",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type"
   };
 }
-
 function applyCors(res, origin) {
-  const headers = corsHeaders(origin);
-  Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+  Object.entries(corsHeaders(origin)).forEach(([k, v]) => res.setHeader(k, v));
 }
 
-/*  ░░░ MAIN HANDLER ░░░  */
+// ——— Main handler ———
 export default async function handler(req, res) {
-  const origin = req.headers.origin || "null";
+  const origin = req.headers.origin ?? "null";
 
-  // ── 1)  PRE-FLIGHT  ────────────────────────────────────────
+  // ① PRE-FLIGHT
   if (req.method === "OPTIONS") {
     applyCors(res, origin);
     res.status(200).end();
     return;
   }
 
-  // ── 2)  METHOD CHECK  ──────────────────────────────────────
+  // ② ONLY allow POST
   if (req.method !== "POST") {
     applyCors(res, origin);
     res.status(405).json({ error: "Method Not Allowed" });
     return;
   }
 
-  // ── 3)  BODY VALIDATION  ───────────────────────────────────
-  const { userInput = "" } = req.body || {};
-  if (typeof userInput !== "string") {
+  // ③ BODY validation
+  const { userInput } = req.body || {};
+  if (!userInput || typeof userInput !== "string") {
     applyCors(res, origin);
     res.status(400).json({ error: "Request must include JSON { userInput }" });
     return;
   }
 
-  // ── 4)  ACTUAL ANSWER  ─────────────────────────────────────
-  // TODO: replace this stub with a real OpenAI call.
-  const answer = `You said: ${userInput}`;
+  try {
+    // ④ Your business logic — ask OpenAI
+    const chat = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: userInput }]
+    });
+    const answer = chat.choices?.[0]?.message?.content?.trim() || "(no answer)";
 
-  // ── 5)  RESPONSE  ──────────────────────────────────────────
-  applyCors(res, origin);
-  res.status(200).json({ answer });
+    applyCors(res, origin);
+    res.status(200).json({ answer });
+  } catch (err) {
+    console.error(err);
+    applyCors(res, origin);
+    res.status(500).json({ error: "AI request failed" });
+  }
 }

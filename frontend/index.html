@@ -3,57 +3,243 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Zen Dhandho – Ask Sarah</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Zen Dhandho – Ask Sarah</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 50%, #0d1117 100%);
+      color: #e8e6e3;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      text-align: center;
+      padding: 1.5rem 1rem 1rem;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #d4af37;
+      letter-spacing: 0.5px;
+    }
+    header p {
+      color: #8b9dc3;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+    #chatArea {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .msg {
+      max-width: 85%;
+      padding: 0.85rem 1.1rem;
+      border-radius: 1rem;
+      line-height: 1.55;
+      font-size: 0.95rem;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.sarah {
+      align-self: flex-start;
+      background: linear-gradient(135deg, #1c2333, #252d3d);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-bottom-left-radius: 4px;
+      color: #e0ddd8;
+    }
+    .msg.sarah .name {
+      font-weight: 600;
+      color: #d4af37;
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #1a3a5c, #1e4a6e);
+      border: 1px solid rgba(100, 160, 220, 0.2);
+      border-bottom-right-radius: 4px;
+      color: #d8e8f8;
+    }
+    .msg.typing {
+      align-self: flex-start;
+      background: linear-gradient(135deg, #1c2333, #252d3d);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-bottom-left-radius: 4px;
+      color: #8b9dc3;
+      font-style: italic;
+    }
+    .msg.typing .dots span {
+      animation: blink 1.4s infinite;
+      font-style: normal;
+      font-size: 1.2rem;
+    }
+    .msg.typing .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .msg.typing .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 60%, 100% { opacity: 0.2; }
+      30% { opacity: 1; }
+    }
+    #inputArea {
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid rgba(212, 175, 55, 0.15);
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    #chatForm {
+      display: flex;
+      gap: 0.75rem;
+    }
+    #question {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      background: #151a28;
+      color: #e8e6e3;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #question:focus {
+      border-color: #d4af37;
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+    }
+    #question::placeholder { color: #5a6a80; }
+    #sendBtn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      border: none;
+      background: linear-gradient(135deg, #d4af37, #b8962e);
+      color: #0a0e1a;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #sendBtn:hover { background: linear-gradient(135deg, #e0c050, #c8a438); }
+    #sendBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .disclaimer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #5a6a80;
+      padding: 0 1rem 1rem;
+    }
+  </style>
 </head>
-<body class="h-full bg-gradient-to-br from-teal-50 to-emerald-100 flex flex-col">
-  <header class="text-center py-6">
-    <h1 class="text-3xl font-extrabold text-emerald-700 drop-shadow">Ask Sarah&nbsp;•&nbsp;Zen Dhandho</h1>
+<body>
+  <header>
+    <h1>Sarah &bull; Zen Dhandho Advisor</h1>
+    <p>Your guide to building a strong Financial Temple</p>
   </header>
 
-  <main class="mx-auto w-full max-w-3xl bg-white/80 rounded-2xl shadow p-8 grow flex flex-col">
-    <form id="chatForm" class="flex gap-3">
-      <input id="question" class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-             type="text" placeholder="Type your question…" autocomplete="off" required />
-      <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 rounded-lg">Ask</button>
-    </form>
-
-    <!-- answer area -->
-    <div id="answer" class="mt-8 text-lg leading-relaxed whitespace-pre-wrap"></div>
-
-    <!-- spinner -->
-    <div id="spinner" class="hidden mt-4 flex justify-center">
-      <svg class="animate-spin h-8 w-8 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-      </svg>
+  <div id="chatArea">
+    <div class="msg sarah">
+      <div class="name">Sarah</div>
+      Hi! I'm Sarah, your Zen Dhandho Advisor. Whether you're just starting your financial journey or looking to strengthen your temple, I'm here to help. What's on your mind today?
     </div>
-  </main>
+  </div>
+
+  <div id="inputArea">
+    <form id="chatForm">
+      <input id="question" type="text" placeholder="Ask Sarah anything about finance..." autocomplete="off" required />
+      <button id="sendBtn" type="submit">Send</button>
+    </form>
+  </div>
+  <div class="disclaimer">Sarah provides general financial education, not personalized financial advice.</div>
 
   <script>
-    const form   = document.getElementById('chatForm');
-    const input  = document.getElementById('question');
-    const answer = document.getElementById('answer');
-    const spin   = document.getElementById('spinner');
+    const form     = document.getElementById('chatForm');
+    const input    = document.getElementById('question');
+    const chatArea = document.getElementById('chatArea');
+    const sendBtn  = document.getElementById('sendBtn');
+
+    let conversationHistory = [];
+
+    function addMessage(role, text) {
+      const div = document.createElement('div');
+      if (role === 'user') {
+        div.className = 'msg user';
+        div.textContent = text;
+      } else {
+        div.className = 'msg sarah';
+        div.innerHTML = '<div class="name">Sarah</div>' + escapeHtml(text);
+      }
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg typing';
+      div.id = 'typingIndicator';
+      div.innerHTML = '<div class="name" style="color:#d4af37;font-weight:600;font-size:0.8rem;margin-bottom:0.35rem;">Sarah</div><div class="dots"><span>●</span> <span>●</span> <span>●</span></div>';
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function hideTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      answer.textContent = '';                 // clear last answer
-      spin.classList.remove('hidden');
+      const userText = input.value.trim();
+      if (!userText) return;
 
-      const res  = await fetch('/api/chat', {
-        method : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({ userInput: input.value })
-      });
-
-      const data = await res.json();
-      spin.classList.add('hidden');
-      answer.textContent = data.answer || 'No response 🤔';
-
+      addMessage('user', userText);
       input.value = '';
-      answer.scrollIntoView({ behavior: 'smooth' });
+      sendBtn.disabled = true;
+      showTyping();
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userInput: userText,
+            history: conversationHistory
+          })
+        });
+
+        const data = await res.json();
+        hideTyping();
+
+        if (data.answer) {
+          addMessage('sarah', data.answer);
+          conversationHistory = data.history || conversationHistory;
+        } else {
+          addMessage('sarah', 'I had a little trouble with that. Could you try rephrasing?');
+        }
+      } catch (err) {
+        hideTyping();
+        addMessage('sarah', 'I seem to be having a connection issue. Please try again in a moment.');
+      }
+
+      sendBtn.disabled = false;
+      input.focus();
     });
   </script>
 </body>

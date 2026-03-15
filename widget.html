@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><meta charset="utf-8" />
+<title>Ask Sarah – Zen Dhandho</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#0a0e1a}
+#box{max-width:420px;margin:0 auto;padding:16px;background:#151a28;border:1px solid rgba(212,175,55,0.2);border-radius:12px}
+#box h3{margin:0 0 10px;font-size:1rem;font-weight:600;color:#d4af37}
+#msgs{max-height:350px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.m{padding:8px 12px;border-radius:10px;font-size:.9rem;line-height:1.5;max-width:90%;white-space:pre-wrap}
+.m.s{align-self:flex-start;background:#1c2333;border:1px solid rgba(212,175,55,0.12);color:#e0ddd8;border-bottom-left-radius:3px}
+.m.u{align-self:flex-end;background:#1a3a5c;border:1px solid rgba(100,160,220,0.15);color:#d8e8f8;border-bottom-right-radius:3px}
+.m .n{font-weight:600;color:#d4af37;font-size:.75rem;margin-bottom:3px}
+#q{width:100%;padding:10px;resize:none;box-sizing:border-box;border-radius:8px;border:1px solid rgba(212,175,55,0.3);background:#0d1117;color:#e8e6e3;font-size:.9rem;outline:none}
+#q:focus{border-color:#d4af37}
+#q::placeholder{color:#5a6a80}
+#btn{margin-top:8px;padding:8px 20px;cursor:pointer;border:none;border-radius:8px;background:linear-gradient(135deg,#d4af37,#b8962e);color:#0a0e1a;font-weight:600;font-size:.9rem}
+#btn:hover{background:linear-gradient(135deg,#e0c050,#c8a438)}
+#btn:disabled{opacity:0.5;cursor:not-allowed}
+.disc{text-align:center;font-size:.7rem;color:#5a6a80;margin-top:8px}
+</style>
+
+<div id="box">
+  <h3>Sarah &bull; Zen Dhandho Advisor</h3>
+  <div id="msgs">
+    <div class="m s"><div class="n">Sarah</div>Hi! I'm Sarah, your Zen Dhandho Advisor. What's on your mind today?</div>
+  </div>
+  <textarea id="q" rows="2" placeholder="Ask Sarah anything about finance..."></textarea>
+  <button id="btn">Send</button>
+  <div class="disc">General financial education, not personalized advice.</div>
+</div>
+
+<script>
+const ENDPOINT="https://sarah-backend.vercel.app/api/chat";
+const $q=document.getElementById("q"),$btn=document.getElementById("btn"),
+      $msgs=document.getElementById("msgs");
+let history=[];
+
+function addMsg(role,text){
+  const d=document.createElement("div");
+  if(role==="user"){d.className="m u";d.textContent=text;}
+  else{d.className="m s";d.innerHTML='<div class="n">Sarah</div>'+text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");}
+  $msgs.appendChild(d);$msgs.scrollTop=$msgs.scrollHeight;
+}
+
+$btn.onclick=async()=>{
+  const userInput=$q.value.trim();
+  if(!userInput)return;
+  addMsg("user",userInput);
+  $q.value="";$btn.disabled=true;
+  const typing=document.createElement("div");typing.className="m s";typing.id="typing";
+  typing.innerHTML='<div class="n">Sarah</div><em style="color:#8b9dc3">thinking...</em>';
+  $msgs.appendChild(typing);$msgs.scrollTop=$msgs.scrollHeight;
+  try{
+    const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+                                    body:JSON.stringify({userInput,history})});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    document.getElementById("typing")?.remove();
+    addMsg("sarah",data.answer||"I had trouble with that. Try again?");
+    if(data.history)history=data.history;
+  }catch(e){document.getElementById("typing")?.remove();addMsg("sarah","Connection issue. Please try again.");}
+  finally{$btn.disabled=false;$q.focus();}
+};
+$q.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$btn.click();}});
+</script>
+</html>

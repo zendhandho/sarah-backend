@@ -16,56 +16,30 @@
     }
     header {
       text-align: center;
-      padding: 1.5rem 1rem 1rem;
+      padding: 1.2rem 1rem 0.8rem;
       border-bottom: 1px solid rgba(212, 175, 55, 0.2);
     }
-    header h1 {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #d4af37;
-      letter-spacing: 0.5px;
-    }
-    header p {
-      color: #8b9dc3;
-      font-size: 0.9rem;
-      margin-top: 0.25rem;
-    }
+    header .avatar { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #d4af37; margin-bottom: 0.4rem; }
+    header h1 { font-size: 1.5rem; font-weight: 700; color: #d4af37; letter-spacing: 0.5px; }
+    header p { color: #8b9dc3; font-size: 0.85rem; margin-top: 0.15rem; }
     #chatArea {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.5rem;
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      flex: 1; overflow-y: auto; padding: 1.5rem;
+      max-width: 800px; width: 100%; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 1rem;
     }
-    .msg {
-      max-width: 85%;
-      padding: 0.85rem 1.1rem;
-      border-radius: 1rem;
-      line-height: 1.55;
-      font-size: 0.95rem;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .msg { max-width: 85%; padding: 0.85rem 1.1rem; border-radius: 1rem; line-height: 1.55; font-size: 0.95rem; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .msg.sarah {
       align-self: flex-start;
       background: linear-gradient(135deg, #1c2333, #252d3d);
       border: 1px solid rgba(212, 175, 55, 0.15);
       border-bottom-left-radius: 4px;
       color: #e0ddd8;
+      display: flex; gap: 0.7rem; align-items: flex-start;
     }
-    .msg.sarah .name {
-      font-weight: 600;
-      color: #d4af37;
-      font-size: 0.8rem;
-      margin-bottom: 0.35rem;
-    }
+    .msg.sarah .av { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+    .msg.sarah .bubble { flex: 1; }
+    .msg.sarah .name { font-weight: 600; color: #d4af37; font-size: 0.8rem; margin-bottom: 0.35rem; }
     .msg.user {
       align-self: flex-end;
       background: linear-gradient(135deg, #1a3a5c, #1e4a6e);
@@ -78,78 +52,46 @@
       background: linear-gradient(135deg, #1c2333, #252d3d);
       border: 1px solid rgba(212, 175, 55, 0.15);
       border-bottom-left-radius: 4px;
-      color: #8b9dc3;
-      font-style: italic;
+      color: #8b9dc3; font-style: italic;
+      display: flex; gap: 0.7rem; align-items: flex-start;
     }
-    .msg.typing .dots span {
-      animation: blink 1.4s infinite;
-      font-style: normal;
-      font-size: 1.2rem;
-    }
+    .msg.typing .dots span { animation: blink 1.4s infinite; font-style: normal; font-size: 1.2rem; }
     .msg.typing .dots span:nth-child(2) { animation-delay: 0.2s; }
     .msg.typing .dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink {
-      0%, 60%, 100% { opacity: 0.2; }
-      30% { opacity: 1; }
-    }
-    #inputArea {
-      padding: 1rem 1.5rem 1.5rem;
-      border-top: 1px solid rgba(212, 175, 55, 0.15);
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto;
-    }
-    #chatForm {
-      display: flex;
-      gap: 0.75rem;
-    }
+    @keyframes blink { 0%, 60%, 100% { opacity: 0.2; } 30% { opacity: 1; } }
+    #inputArea { padding: 1rem 1.5rem 1.5rem; border-top: 1px solid rgba(212, 175, 55, 0.15); max-width: 800px; width: 100%; margin: 0 auto; }
+    #chatForm { display: flex; gap: 0.75rem; }
     #question {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      background: #151a28;
-      color: #e8e6e3;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
+      flex: 1; padding: 0.75rem 1rem; border-radius: 0.75rem;
+      border: 1px solid rgba(212, 175, 55, 0.3); background: #151a28;
+      color: #e8e6e3; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
     }
-    #question:focus {
-      border-color: #d4af37;
-      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
-    }
+    #question:focus { border-color: #d4af37; box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15); }
     #question::placeholder { color: #5a6a80; }
     #sendBtn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.75rem;
-      border: none;
-      background: linear-gradient(135deg, #d4af37, #b8962e);
-      color: #0a0e1a;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 0.75rem 1.5rem; border-radius: 0.75rem; border: none;
+      background: linear-gradient(135deg, #d4af37, #b8962e); color: #0a0e1a;
+      font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
     }
     #sendBtn:hover { background: linear-gradient(135deg, #e0c050, #c8a438); }
     #sendBtn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .disclaimer {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #5a6a80;
-      padding: 0 1rem 1rem;
-    }
+    .disclaimer { text-align: center; font-size: 0.75rem; color: #5a6a80; padding: 0 1rem 1rem; }
   </style>
 </head>
 <body>
   <header>
+    <img class="avatar" src="data:image/jpeg;base64,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" alt="Sarah">
     <h1>Sarah &bull; Zen Dhandho Advisor</h1>
     <p>Your guide to building a strong Financial Temple</p>
   </header>
 
   <div id="chatArea">
     <div class="msg sarah">
-      <div class="name">Sarah</div>
-      Hi! I'm Sarah, your Zen Dhandho Advisor. Whether you're just starting your financial journey or looking to strengthen your temple, I'm here to help. What's on your mind today?
+      <img class="av" src="data:image/jpeg;base64,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" alt="Sarah">
+      <div class="bubble">
+        <div class="name">Sarah</div>
+        Hi! I'm Sarah, your Zen Dhandho Advisor. Whether you're just starting your financial journey or looking to strengthen your temple, I'm here to help. What's on your mind today?
+      </div>
     </div>
   </div>
 
@@ -162,11 +104,11 @@
   <div class="disclaimer">Sarah provides general financial education, not personalized financial advice.</div>
 
   <script>
+    const SARAH_AVATAR = "data:image/jpeg;base64,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";
     const form     = document.getElementById('chatForm');
     const input    = document.getElementById('question');
     const chatArea = document.getElementById('chatArea');
     const sendBtn  = document.getElementById('sendBtn');
-
     let conversationHistory = [];
 
     function addMessage(role, text) {
@@ -176,7 +118,7 @@
         div.textContent = text;
       } else {
         div.className = 'msg sarah';
-        div.innerHTML = '<div class="name">Sarah</div>' + escapeHtml(text);
+        div.innerHTML = '<img class="av" src="' + SARAH_AVATAR + '" alt="Sarah"><div class="bubble"><div class="name">Sarah</div>' + escapeHtml(text) + '</div>';
       }
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
@@ -186,7 +128,7 @@
       const div = document.createElement('div');
       div.className = 'msg typing';
       div.id = 'typingIndicator';
-      div.innerHTML = '<div class="name" style="color:#d4af37;font-weight:600;font-size:0.8rem;margin-bottom:0.35rem;">Sarah</div><div class="dots"><span>●</span> <span>●</span> <span>●</span></div>';
+      div.innerHTML = '<img class="av" src="' + SARAH_AVATAR + '" alt="Sarah"><div class="bubble"><div class="name" style="color:#d4af37;font-weight:600;font-size:0.8rem;margin-bottom:0.35rem;">Sarah</div><div class="dots"><span>●</span> <span>●</span> <span>●</span></div></div>';
       chatArea.appendChild(div);
       chatArea.scrollTop = chatArea.scrollHeight;
     }
@@ -197,36 +139,25 @@
     }
 
     function escapeHtml(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>');
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
     }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const userText = input.value.trim();
       if (!userText) return;
-
       addMessage('user', userText);
       input.value = '';
       sendBtn.disabled = true;
       showTyping();
-
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userInput: userText,
-            history: conversationHistory
-          })
+          body: JSON.stringify({ userInput: userText, history: conversationHistory })
         });
-
         const data = await res.json();
         hideTyping();
-
         if (data.answer) {
           addMessage('sarah', data.answer);
           conversationHistory = data.history || conversationHistory;
@@ -237,7 +168,6 @@
         hideTyping();
         addMessage('sarah', 'I seem to be having a connection issue. Please try again in a moment.');
       }
-
       sendBtn.disabled = false;
       input.focus();
     });
